@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 
 def existing_file(path):
    path = os.path.abspath(path)
@@ -24,9 +25,14 @@ def main(in_file, out_files):
     source_lines = []
     dest_lines = []
 
+    i = 1
     for pair in map( lambda pair: tuple(pair.split("\t")), pairs ):
-        source_lines.append( pair[0] )
-        dest_lines.append( pair[1].strip() )
+        if len(pair) == 2:
+            source_lines.append( pair[0] )
+            dest_lines.append( pair[1].strip() )
+        else:
+            sys.stderr.write("Line %d has %d tab-separated values, skipping . . .\n" % (i, len(pair)) )
+        i += 1
 
     with open(out_files[0], "w", encoding="utf-8") as w:
         w.writelines( "\n".join(source_lines) )
